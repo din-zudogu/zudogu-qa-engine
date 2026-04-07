@@ -18,10 +18,12 @@ npm install
 npx playwright install --with-deps
 ```
 
-## Traceability
+## Traceability & coverage
 
-- `docs/TRACEABILITY_MATRIX.md` — Test Case ID → page/API → **spec file**
-- `docs/SEED_DATA_STRATEGY.md` — BP-E2E seed/teardown (ไม่แตะแพลตฟอร์ม)
+- `docs/TRACEABILITY_MATRIX.md` — Test Case ID → page/API → **spec file** (fill **planned** rows next)
+- `docs/SEED_DATA_STRATEGY.md` — BP-E2E seed/teardown (ไม่แตะแพลตฟอร์ม); use **`E2E_*`** in `.env` when implementing
+
+**Team:** agree which URL is **official QA/staging** and whether seed/teardown is **API**, **Mongo script**, or **fixed data** (document in your runbook; not in this repo).
 
 ## Auth (storageState)
 
@@ -52,7 +54,17 @@ npm run test:security     # tests/security only
 npm run report            # open last HTML report (after a run)
 ```
 
-### CI
+### CI (GitHub Actions)
+
+Workflow: `.github/workflows/ci.yml` — runs `npm ci`, Playwright install, `npm run test -- --list`, then `api` + `ui` projects.
+
+In the repo **Settings → Secrets and variables → Actions**, add:
+
+- **`BASE_URL`** — staging QA URL (same URL the team agrees is for QA; never commit secrets).
+
+Optional: extend the workflow later with more secrets for `auth:setup` in CI if you need authenticated projects.
+
+### Local CI-like run
 
 ```bash
 CI=1 npm test
@@ -82,5 +94,3 @@ CI=1 npm test
 | `TENANT_EMAIL` / `TENANT_PASSWORD` | For `auth:setup` | บัญชีเจ้าของร้าน |
 | `RUN_AUTH_BEFORE_TESTS` | No | `1` = รัน login ใน global-setup ก่อนเทสต์ |
 | `SKIP_GLOBAL_AUTH` | No | `1` = ข้าม global-setup |
-
-# zudogu-qa-engine

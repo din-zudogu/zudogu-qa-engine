@@ -1,0 +1,28 @@
+{
+  "name": "zudogu-qa-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone black-box QA automation for DivesSpace / ZUDOGU (separate from platform source)",
+  "scripts": {
+    "test": "playwright test",
+    "test:api": "playwright test tests/api",
+    "test:api-tenant": "playwright test tests/api-tenant",
+    "test:ui": "playwright test tests/ui",
+    "test:e2e": "playwright test tests/e2e",
+    "test:security": "playwright test tests/security",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report",
+    "install:browsers": "playwright install --with-deps",
+    "typecheck": "tsc --noEmit",
+    "auth:setup": "npx tsx scripts/cli-auth-setup.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.10.2",
+    "dotenv": "^16.4.5",
+    "playwright": "^1.49.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
