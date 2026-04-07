@@ -7,9 +7,15 @@ export function getBaseURL(): string {
   return u.replace(/\/$/, "");
 }
 
+/** Tenant storefront origin (subdomain). Prefer TENANT_BASE_URL; TENANT_HOST is legacy. */
 export function getTenantBaseURL(): string | null {
-  const h = process.env.TENANT_HOST;
-  if (!h) return null;
-  const protocol = h.startsWith("http") ? "" : "http://";
-  return `${protocol}${h}`.replace(/\/$/, "");
+  const raw =
+    process.env.TENANT_BASE_URL?.trim() || process.env.TENANT_HOST?.trim();
+  if (!raw) return null;
+  if (raw.startsWith("http")) return raw.replace(/\/$/, "");
+  return `http://${raw}`.replace(/\/$/, "");
+}
+
+export function hasE2EProductSeed(): boolean {
+  return Boolean(process.env.E2E_PRODUCT_SLUG?.trim());
 }

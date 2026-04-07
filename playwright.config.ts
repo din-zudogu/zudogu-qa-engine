@@ -8,6 +8,9 @@ dotenv.config({ path: path.resolve(__dirname, ".env") });
 const envBase = process.env.BASE_URL?.trim();
 const baseURL =
   envBase && envBase.length > 0 ? envBase : "http://127.0.0.1:3000";
+const tenantEnv = process.env.TENANT_BASE_URL?.trim();
+const tenantBaseURL =
+  tenantEnv && tenantEnv.length > 0 ? tenantEnv : baseURL;
 const storageDir = path.join(__dirname, "storage");
 const adminStorageState = path.join(storageDir, "adminStorageState.json");
 const tenantStorageState = path.join(storageDir, "tenantStorageState.json");
@@ -44,7 +47,11 @@ export default defineConfig({
     {
       name: "api-tenant",
       testMatch: /api-tenant\/.*\.spec\.ts/,
-      use: { ...devices["Desktop Chrome"], ...tenantStateOpt },
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: tenantBaseURL,
+        ...tenantStateOpt,
+      },
     },
     {
       name: "ui",
@@ -59,17 +66,28 @@ export default defineConfig({
     {
       name: "ui-tenant",
       testMatch: /ui\/tenant\/.*\.spec\.ts/,
-      use: { ...devices["Desktop Chrome"], ...tenantStateOpt },
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: tenantBaseURL,
+        ...tenantStateOpt,
+      },
     },
     {
       name: "e2e",
       testMatch: /e2e\/.*\.spec\.ts/,
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: tenantBaseURL,
+      },
     },
     {
       name: "security",
       testMatch: /security\/.*\.spec\.ts/,
-      use: { ...devices["Desktop Chrome"], ...tenantStateOpt },
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: tenantBaseURL,
+        ...tenantStateOpt,
+      },
     },
   ],
 });

@@ -16,4 +16,11 @@ test.describe("API-01 public home APIs", () => {
     expect(res.status()).toBeGreaterThanOrEqual(200);
     expect(res.status()).toBeLessThan(300);
   });
+
+  test("GET /api/home/index JSON has success flag", async ({ request }) => {
+    const res = await request.get("/api/home/index");
+    expect(res.ok()).toBeTruthy();
+    const body = await res.json();
+    expect(body).toMatchObject({ success: true });
+  });
 });

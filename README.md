@@ -94,3 +94,7 @@ CI=1 npm test
 | `TENANT_EMAIL` / `TENANT_PASSWORD` | For `auth:setup` | บัญชีเจ้าของร้าน |
 | `RUN_AUTH_BEFORE_TESTS` | No | `1` = รัน login ใน global-setup ก่อนเทสต์ |
 | `SKIP_GLOBAL_AUTH` | No | `1` = ข้าม global-setup |
+| `E2E_PRODUCT_SLUG` | No | slug สำหรับ BP-E2E-01 (`/product/...`) |
+| `E2E_COUPON_CODE` | No | รหัสคูปองที่ใช้ได้จริง เทสต์ positive ใน `api-tenant-coupon` |
+
+โปรเจกต์ `api-tenant`, `ui-tenant`, `security`, `e2e` ใช้ **`TENANT_BASE_URL`** เป็น `baseURL` (ถ้าไม่ตั้งจะใช้ `BASE_URL` แทน) เพื่อให้คุกกี้ session ตรงกับโฮสต์ร้าน
