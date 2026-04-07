@@ -14,12 +14,16 @@ const tenantBaseURL =
 const storageDir = path.join(__dirname, "storage");
 const adminStorageState = path.join(storageDir, "adminStorageState.json");
 const tenantStorageState = path.join(storageDir, "tenantStorageState.json");
+const shopperStorageState = path.join(storageDir, "shopperStorageState.json");
 
 const adminStateOpt = fs.existsSync(adminStorageState)
   ? { storageState: adminStorageState }
   : {};
 const tenantStateOpt = fs.existsSync(tenantStorageState)
   ? { storageState: tenantStorageState }
+  : {};
+const shopperStateOpt = fs.existsSync(shopperStorageState)
+  ? { storageState: shopperStorageState }
   : {};
 
 export default defineConfig({
@@ -74,10 +78,19 @@ export default defineConfig({
     },
     {
       name: "e2e",
-      testMatch: /e2e\/.*\.spec\.ts/,
+      testMatch: /e2e\/(?!journeys\/).*\.spec\.ts$/,
       use: {
         ...devices["Desktop Chrome"],
         baseURL: tenantBaseURL,
+      },
+    },
+    {
+      name: "e2e-journeys",
+      testMatch: /e2e\/journeys\/.*\.spec\.ts$/,
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: tenantBaseURL,
+        ...shopperStateOpt,
       },
     },
     {

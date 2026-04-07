@@ -7,11 +7,11 @@
 
 | Test Case ID | Type | Primary page(s) | Primary API | Spec file | Status |
 |--------------|------|-----------------|-------------|-----------|--------|
-| BP-E2E-01 | E2E+ | `/product/*`, `/checkout` | — | `tests/e2e/bp-e2e-scenarios.spec.ts` | partial (`E2E_PRODUCT_SLUG`, `TENANT_BASE_URL`) |
+| BP-E2E-01 | E2E+ | `/product/*`, `/checkout` | `POST /api/order/new` | `tests/e2e/journeys/shopper-checkout-return.spec.ts`, `tests/e2e/bp-e2e-scenarios.spec.ts` | impl (full journey: auth + `seed:mock` + manifest) |
 | BP-E2E-02 | E2E+ / API+ | `/checkout` | `POST /api/order/coupon` | `tests/api-tenant/api-tenant-coupon.spec.ts` | impl (+ optional `E2E_COUPON_CODE`) |
 | BP-E2E-03 | E2E+ / API+ | `/dashboard/*` | `GET /api/dashboard/sales` | `tests/api-tenant/api-tenant-dashboard.spec.ts`, `tests/ui/tenant/dashboard-smoke.spec.ts` | impl (tenant storage) |
 | BP-E2E-04 | E2E+ | `/admin/*` | `GET /api/admin/*` | `tests/ui/platform-admin/platform-config.spec.ts` | impl (admin storage) |
-| BP-E2E-05 | API- | return flow | `POST /api/return-request` | `tests/api/api-return-request-unauth.spec.ts` | impl (negative unauth) |
+| BP-E2E-05 | API+ | return flow | `POST /api/return-request` | `tests/api/api-return-request-unauth.spec.ts`, `tests/e2e/journeys/shopper-checkout-return.spec.ts` | impl (E2E + pending + success) |
 | BP-E2E-06 | API+ / UI+ | `/partner-services` | `GET /api/partners/marketplace` | `tests/api/api-partners-marketplace.spec.ts`, `tests/ui/partner-services-smoke.spec.ts` | impl |
 | BP-E2E-07 | API- | billing | `GET /api/platform/billing-invoices` | `tests/api/api-platform-billing-unauth.spec.ts`, `tests/api-tenant/api-tenant-platform-billing-forbidden.spec.ts` | impl |
 | BP-E2E-08 | API+ | storefront AI | `POST /api/storefront/ai-chat` | `tests/api/api-storefront-ai-negative.spec.ts`, `tests/api-tenant/api-tenant-storefront-ai.spec.ts` | impl (negative + body validation) |

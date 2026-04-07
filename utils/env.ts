@@ -17,5 +17,8 @@ export function getTenantBaseURL(): string | null {
 }
 
 export function hasE2EProductSeed(): boolean {
-  return Boolean(process.env.E2E_PRODUCT_SLUG?.trim());
+  return Boolean(
+    process.env.E2E_PRODUCT_SLUG?.trim() ||
+      process.env.E2E_PRODUCT_1_SLUG?.trim()
+  );
 }

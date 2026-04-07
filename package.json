@@ -15,7 +15,8 @@
     "report": "playwright show-report",
     "install:browsers": "playwright install --with-deps",
     "typecheck": "tsc --noEmit",
-    "auth:setup": "npx tsx scripts/cli-auth-setup.ts"
+    "auth:setup": "npx tsx scripts/cli-auth-setup.ts",
+    "seed:mock": "npx tsx scripts/seed/setup-mock-data.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",

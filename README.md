@@ -27,18 +27,35 @@ npx playwright install --with-deps
 
 ## Auth (storageState)
 
-สร้างไฟล์ cookie session สำหรับ Playwright (แยก admin / tenant):
+สร้างไฟล์ cookie session สำหรับ Playwright (admin / tenant / shopper):
 
 ```bash
 cp .env.example .env
-# ตั้ง ADMIN_EMAIL, ADMIN_PASSWORD, TENANT_BASE_URL, TENANT_EMAIL, TENANT_PASSWORD
+# ตั้ง ADMIN_*, TENANT_BASE_URL + TENANT_*, SHOPPER_* (ลูกค้า ล็อกอินที่ TENANT_BASE_URL/signin)
 npm run auth:setup
 ```
 
 ผลลัพธ์:
 
-- `storage/adminStorageState.json` — Platform admin (เช่น Din) ล็อกอินที่ `BASE_URL/signin`
-- `storage/tenantStorageState.json` — ร้านค้า ล็อกอินที่ `TENANT_BASE_URL/signin`
+- `storage/adminStorageState.json` — Platform admin ล็อกอินที่ `BASE_URL/signin`
+- `storage/tenantStorageState.json` — เจ้าของร้าน ล็อกอินที่ `TENANT_BASE_URL/signin`
+- `storage/shopperStorageState.json` — ลูกค้า ล็อกอินที่ `TENANT_BASE_URL/signin`
+
+### Seed mock data (local E2E)
+
+หลังแอปรันอยู่และมีหมวดหมู่/แบรนด์ใน tenant แล้ว:
+
+```bash
+npm run seed:mock
+```
+
+สคริปต์ใช้ **Playwright + storageState** (ไม่ใช้ Bearer แยก) เรียก API จริง: platform config, tenant shipping,สินค้า 2 รายการ, คูปอง, ที่อยู่ shopper (ถ้ายังไม่มี) แล้วเขียน `storage/e2e-seed-manifest.json` (gitignored)
+
+### Full journey tests (checkout + return)
+
+```bash
+npx playwright test --project=e2e-journeys
+```
 
 ถ้าต้องการให้ `playwright test` รันล็อกอินก่อนทุกครั้ง (ช้า): ตั้ง `RUN_AUTH_BEFORE_TESTS=1` ใน `.env`
 
@@ -92,9 +109,10 @@ CI=1 npm test
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | For `auth:setup` | บัญชี platform admin |
 | `TENANT_BASE_URL` | For tenant auth | ต้นทางร้าน เช่น `http://shop.localhost:3000` |
 | `TENANT_EMAIL` / `TENANT_PASSWORD` | For `auth:setup` | บัญชีเจ้าของร้าน |
+| `SHOPPER_EMAIL` / `SHOPPER_PASSWORD` | For `auth:setup` + `e2e-journeys` | บัญชีลูกค้า (โฮสต์เดียวกับร้าน) |
 | `RUN_AUTH_BEFORE_TESTS` | No | `1` = รัน login ใน global-setup ก่อนเทสต์ |
 | `SKIP_GLOBAL_AUTH` | No | `1` = ข้าม global-setup |
-| `E2E_PRODUCT_SLUG` | No | slug สำหรับ BP-E2E-01 (`/product/...`) |
-| `E2E_COUPON_CODE` | No | รหัสคูปองที่ใช้ได้จริง เทสต์ positive ใน `api-tenant-coupon` |
+| `E2E_PRODUCT_1_SLUG` / `E2E_PRODUCT_2_SLUG` | No | ค่าอ้างอิง slug (ชื่อจริงใน URL มี suffix สุ่มจากแพลตฟอร์ม — ใช้ค่าจาก `e2e-seed-manifest.json` เวลารัน E2E) |
+| `E2E_COUPON_CODE` | No | รหัสคูปอง seed + เทสต์ positive ใน `api-tenant-coupon` |
 
-โปรเจกต์ `api-tenant`, `ui-tenant`, `security`, `e2e` ใช้ **`TENANT_BASE_URL`** เป็น `baseURL` (ถ้าไม่ตั้งจะใช้ `BASE_URL` แทน) เพื่อให้คุกกี้ session ตรงกับโฮสต์ร้าน
+โปรเจกต์ `api-tenant`, `ui-tenant`, `security`, `e2e`, `e2e-journeys` ใช้ **`TENANT_BASE_URL`** เป็น `baseURL` (ถ้าไม่ตั้งจะใช้ `BASE_URL` แทน) เพื่อให้คุกกี้ session ตรงกับโฮสต์ร้าน

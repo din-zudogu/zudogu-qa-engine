@@ -1,17 +1,17 @@
-# Seed helpers (optional extensions)
+# Seed scripts
 
-โฟลเดอร์นี้เก็บ **แนวทางและ stub** สำหรับ seed/teardown โดยไม่แตะแพลตฟอร์ม
+- **`setup-mock-data.ts`** — `npm run seed:mock`  
+  ใช้ **Playwright `APIRequestContext` + `storage/admin|tenant|shopper` state** (หลัง `npm run auth:setup`) เรียก API จริงของแพลตฟอร์ม: `PUT /api/admin/platform-config`, `PUT /api/tenant/shipping-config`, `POST /api/product/create` (multipart), `POST /api/coupons`, และสร้างที่อยู่ shopper ผ่าน `POST /api/profile/address` ถ้าจำเป็น  
 
-- **ไม่ติดตั้ง `mongoose` ใน QA engine โดย default** — ถ้าต้องการ script ตรง MongoDB ให้เพิ่ม dependency ใน `zudogu-qa-engine/package.json` แยกต่างหากและรันเฉพาะเครื่องที่มีสิทธิ์เข้า DB
+  ผลลัพธ์: `storage/e2e-seed-manifest.json` (ถูก `.gitignore` อยู่แล้ว) — เก็บ `slug` จริงของสินค้า seed สำหรับ E2E
 
-## ตัวแปรที่แนะนำ (`.env`)
+- **`build-product-multipart.ts`** — สร้างฟิลด์ multipart สำหรับ simple product ให้ตรง `pages/api/product/create.js`
 
-| Variable | คำอธิบาย |
-|----------|-----------|
-| `E2E_PRODUCT_SLUG` | slug สินค้าสำหรับทดสอบบน staging |
-| `E2E_COUPON_CODE` | รหัสคูปอง (ถ้ามี) |
-| `E2E_RUN_ID` | id รอบทดสอบ สำหรับ prefix ข้อมูลที่สร้าง |
+- **`teardown-by-prefix.example.mjs`** — stub ลบข้อมูลตาม prefix (ต่อ Mongo ได้ภายหลัง)
 
-## ไฟล์
+## ลำดับที่แนะนำ (local)
 
-- `teardown-by-prefix.example.mjs` — ตัวอย่างรูปแบบลบ (ไม่รันได้จนกว่าจะต่อ MongoDB driver)
+1. รันแอป (`ecommerce_nextjs-main`) ที่ `BASE_URL` / `TENANT_BASE_URL`
+2. `npm run auth:setup`
+3. `npm run seed:mock`
+4. `npx playwright test --project=e2e-journeys`

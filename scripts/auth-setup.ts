@@ -1,5 +1,5 @@
 /**
- * Saves Playwright storageState files for Platform Admin and Tenant Store Owner.
+ * Saves Playwright storageState files for Platform Admin, Tenant Store Owner, and Shopper (customer).
  * Uses the same /signin form as production: input[name=username], input[name=password].
  *
  * Run: npm run auth:setup
@@ -15,6 +15,7 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 const STORAGE_DIR = path.join(process.cwd(), "storage");
 const ADMIN_FILE = path.join(STORAGE_DIR, "adminStorageState.json");
 const TENANT_FILE = path.join(STORAGE_DIR, "tenantStorageState.json");
+const SHOPPER_FILE = path.join(STORAGE_DIR, "shopperStorageState.json");
 
 function joinUrl(base: string, p: string): string {
   return `${base.replace(/\/$/, "")}${p.startsWith("/") ? p : `/${p}`}`;
@@ -60,6 +61,8 @@ export async function runAuthSetup(): Promise<void> {
   const tenantBase = process.env.TENANT_BASE_URL?.trim();
   const tenantEmail = process.env.TENANT_EMAIL?.trim();
   const tenantPassword = process.env.TENANT_PASSWORD;
+  const shopperEmail = process.env.SHOPPER_EMAIL?.trim();
+  const shopperPassword = process.env.SHOPPER_PASSWORD;
 
   const browser = await chromium.launch({ headless: process.env.HEADED !== "1" });
 
@@ -89,6 +92,21 @@ export async function runAuthSetup(): Promise<void> {
     } else {
       console.warn(
         "[auth-setup] Skip tenant: set TENANT_BASE_URL, TENANT_EMAIL, TENANT_PASSWORD (e.g. http://yourstore.localhost:3000)"
+      );
+    }
+
+    if (tenantBase && shopperEmail && shopperPassword) {
+      await signInAndSave(
+        browser,
+        joinUrl(tenantBase, "/signin"),
+        shopperEmail,
+        shopperPassword,
+        SHOPPER_FILE,
+        "Shopper (customer)"
+      );
+    } else {
+      console.warn(
+        "[auth-setup] Skip shopper: set TENANT_BASE_URL, SHOPPER_EMAIL, SHOPPER_PASSWORD"
       );
     }
   } finally {
