@@ -35,9 +35,14 @@ async function signInAndSave(
   await page.goto(signinUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
   await page.locator('input[name="username"]').fill(email);
   await page.locator('input[name="password"]').fill(password);
+  const submitSignin = page
+    .locator("form")
+    .filter({ has: page.locator('input[name="username"]') })
+    .locator('button[type="submit"]')
+    .first();
   await Promise.all([
     page.waitForURL(/\/dashboard|\/signin/, { timeout: 90_000 }).catch(() => null),
-    page.locator('button[type="submit"]').click(),
+    submitSignin.click(),
   ]);
   await page.waitForLoadState("networkidle", { timeout: 60_000 }).catch(() => {});
   const url = page.url();
